@@ -53,7 +53,7 @@ export const FormInput: React.FC<FormInputProps> = ({
         fullWidth
         id={name}
         {...register(name, validation)}
-        {...{ placeholder, type }}
+        {...{ placeholder, type, autoComplete: "on" }}
         onChange={onChange}
         error={!!error}
         endAdornment={
