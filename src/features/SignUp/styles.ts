@@ -27,6 +27,7 @@ const passwordCriteriaStyles = {
   display: "flex",
   flexDirection: "column",
   paddingLeft: "20px",
+  gap: "1px",
 };
 
 const formHelperStyles = {
