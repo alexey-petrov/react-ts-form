@@ -8,6 +8,8 @@ const COLOR_DEFAULT_BACKGROUND = "#f6f8fa";
 
 const buttonStyles = {
   mt: 3,
+  width: 240,
+  height: 48,
   padding: "12px",
   borderRadius: "30px",
   background: "linear-gradient(110.46deg, #70C3FF 12.27%, #4B65FF 93.92%)",
@@ -18,17 +20,12 @@ const buttonStyles = {
 const boxStyles = {
   maxWidth: 350,
   margin: "auto",
-  padding: "40px",
-  borderRadius: "20px",
-  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-  backgroundColor: "#fff",
   color: COLOR_PRIMARY,
 };
 
 const passwordCriteriaStyles = {
   display: "flex",
   flexDirection: "column",
-  gap: "4px",
   paddingLeft: "20px",
 };
 
@@ -71,7 +68,6 @@ const getFormInputStyles = ({
     mb: 2,
     borderRadius: "10px",
     height: 48,
-    width: 350,
     color: inputColor,
     "& .MuiInputBase-root": {
       backgroundColor: COLOR_DEFAULT_BACKGROUND,

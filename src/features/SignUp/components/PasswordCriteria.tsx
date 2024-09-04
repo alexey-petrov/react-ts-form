@@ -25,8 +25,9 @@ export const PasswordCriteria: React.FC<PasswordCriteriaProps> = ({
     <ListItem
       style={{
         color: getColor(),
-        paddingLeft: 0,
+        padding: 0,
         fontSize: 13,
+        lineHeight: "18px",
       }}
     >
       {message}
