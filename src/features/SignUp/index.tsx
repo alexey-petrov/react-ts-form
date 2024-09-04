@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, List, Typography, Box } from "@mui/material";
 import { IFormInput } from "./types";
@@ -38,47 +38,55 @@ const SignUp: React.FC = () => {
     mode: "onSubmit",
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<IFormInput> = useCallback(async (data) => {
     const isEmailValid = await trigger("email");
     const isPasswordValid = await trigger("password");
 
     if (isEmailValid && isPasswordValid) {
       console.log("Form submitted:", data);
     }
-  };
+  }, []);
+
+  const handlePasswordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!passwordEdited) {
+        setPasswordEdited(true);
+      } else {
+        const passwordInputValue = e.target.value;
+
+        const isPasswordValidLength =
+          passwordInputValue.length >= MIN_PASSWORD_LENGTH &&
+          passwordInputValue.length <= MAX_PASSWORD_LENGTH;
+        const isPasswordPatternValid =
+          PASSWORD_PATTERN_UPPERCASE.test(passwordInputValue) &&
+          PASSWORD_PATTERN_NUMBER.test(passwordInputValue) &&
+          !PASSWORD_SPACES_PATTERN.test(passwordInputValue);
+
+        const isPasswordValid = isPasswordValidLength && isPasswordPatternValid;
+
+        setPasswordValid(isPasswordValid);
+      }
+
+      register("password").onChange(e);
+    },
+    [passwordEdited, setPasswordEdited, setPasswordValid]
+  );
+
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const isEmailValid = EMAIL_PATTERN.test(e.target.value);
+      setEmailValid(isEmailValid);
+
+      register("email").onChange(e);
+    },
+    [setEmailValid]
+  );
+
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword(!showPassword);
+  }, [showPassword, setShowPassword]);
 
   const passwordValue = watch("password", "");
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!passwordEdited) {
-      setPasswordEdited(true);
-    } else {
-      const passwordValue = e.target.value;
-
-      const isPasswordValidLength =
-        passwordValue.length >= MIN_PASSWORD_LENGTH &&
-        passwordValue.length <= MAX_PASSWORD_LENGTH;
-      const isPasswordPatternValid =
-        PASSWORD_PATTERN_UPPERCASE.test(passwordValue) &&
-        PASSWORD_PATTERN_NUMBER.test(passwordValue) &&
-        !PASSWORD_SPACES_PATTERN.test(passwordValue);
-
-      const isPasswordValid = isPasswordValidLength && isPasswordPatternValid;
-
-      setPasswordValid(isPasswordValid);
-    }
-  };
-
-  const handleemailValidationScheme = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const isEmailValid = EMAIL_PATTERN.test(e.target.value);
-    setEmailValid(isEmailValid);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   return (
     <Box sx={boxStyles}>
@@ -99,10 +107,7 @@ const SignUp: React.FC = () => {
           register={register}
           validation={emailValidationScheme}
           error={errors.email}
-          onChange={(e) => {
-            handleemailValidationScheme(e);
-            register("email").onChange(e);
-          }}
+          onChange={handleEmailChange}
           {...{ isFormSubmitted, isEmailValid }}
         />
 
@@ -113,10 +118,7 @@ const SignUp: React.FC = () => {
           register={register}
           validation={passwordValidationScheme}
           error={errors.password}
-          onChange={(e) => {
-            handlePasswordChange(e);
-            register("password").onChange(e);
-          }}
+          onChange={handlePasswordChange}
           showPassword={showPassword}
           onTogglePasswordVisibility={togglePasswordVisibility}
           shouldShowError={false}
@@ -130,7 +132,6 @@ const SignUp: React.FC = () => {
               !PASSWORD_SPACES_PATTERN.test(passwordValue)
             }
             message="At least 8 characters (no spaces)"
-            isEdited={passwordEdited}
             isError={!!errors.password}
           />
           <PasswordCriteria
@@ -139,19 +140,16 @@ const SignUp: React.FC = () => {
               !!passwordValue.length
             }
             message="Not longer than 64 characters"
-            isEdited={passwordEdited || isFormSubmitted}
             isError={!!errors.password}
           />
           <PasswordCriteria
             criteria={PASSWORD_PATTERN_UPPERCASE.test(passwordValue)}
             message="Uppercase and lowercase letters"
-            isEdited={passwordEdited}
             isError={!!errors.password}
           />
           <PasswordCriteria
             criteria={PASSWORD_PATTERN_NUMBER.test(passwordValue)}
             message="At least one digit"
-            isEdited={passwordEdited}
             isError={!!errors.password}
           />
         </List>

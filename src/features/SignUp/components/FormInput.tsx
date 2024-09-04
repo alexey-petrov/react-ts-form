@@ -36,7 +36,6 @@ export const FormInput: React.FC<FormInputProps> = ({
   isEmailValid,
   isPasswordValid,
 }) => {
-  console.log("isPasswordValid", isPasswordValid);
   const formInputStyles = useMemo(
     () =>
       getFormInputStyles({

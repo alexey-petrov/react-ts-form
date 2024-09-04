@@ -66,7 +66,7 @@ const getFormInputStyles = ({
     isEmailValid,
     isPasswordValid
   );
-  console.log("styles", isEmailValid, isPasswordValid);
+
   return {
     mb: 2,
     borderRadius: "10px",
